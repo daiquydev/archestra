@@ -1,6 +1,8 @@
 import type { ChatErrorResponse } from "@shared";
 import { index, jsonb, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
 import conversationsTable from "./conversation";
+import { auditColumns } from "../utils/audit";
+
 
 const conversationChatErrorsTable = pgTable(
   "conversation_chat_errors",
@@ -8,7 +10,9 @@ const conversationChatErrorsTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     conversationId: uuid("conversation_id")
       .notNull()
-      .references(() => conversationsTable.id, { onDelete: "cascade" }),
+      .references(() => conversationsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     error: jsonb("error").$type<ChatErrorResponse>().notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   },

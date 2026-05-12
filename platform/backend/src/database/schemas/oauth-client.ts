@@ -1,5 +1,7 @@
 import { boolean, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const oauthClient = pgTable("oauth_client", {
   id: text("id").primaryKey(),
@@ -21,6 +23,7 @@ const oauthClient = pgTable("oauth_client", {
   scopes: text("scopes").array(),
   userId: text("user_id").references(() => usersTable.id, {
     onDelete: "cascade",
+    ...auditColumns,
   }),
   referenceId: text("reference_id"),
   redirectUris: text("redirect_uris").array().notNull(),

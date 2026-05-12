@@ -24,6 +24,8 @@ import type {
 import agentsTable from "./agent";
 import usersTable from "./user";
 import virtualApiKeysTable from "./virtual-api-key";
+import { auditColumns } from "../utils/audit";
+
 
 const interactionsTable = pgTable(
   "interactions",
@@ -33,7 +35,8 @@ const interactionsTable = pgTable(
     // null indicates the profile was deleted
     profileId: uuid("profile_id").references(() => agentsTable.id, {
       onDelete: "set null",
-    }),
+    ...auditColumns,
+  }),
     /**
      * Optional external agent ID passed via X-Archestra-Agent-Id header.
      * This allows clients to associate interactions with their own agent identifiers.

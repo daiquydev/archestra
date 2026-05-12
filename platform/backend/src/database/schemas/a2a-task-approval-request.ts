@@ -7,6 +7,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import a2aTaskTable from "./a2a-task";
+import { auditColumns } from "../utils/audit";
+
 
 const a2aTaskApprovalRequestTable = pgTable(
   "a2a_task_approval_request",
@@ -14,7 +16,9 @@ const a2aTaskApprovalRequestTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     taskId: uuid("task_id")
       .notNull()
-      .references(() => a2aTaskTable.id, { onDelete: "cascade" }),
+      .references(() => a2aTaskTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     approvalId: text("approval_id").notNull(),
     toolCallId: text("tool_call_id").notNull(),
     toolName: text("tool_name").notNull(),

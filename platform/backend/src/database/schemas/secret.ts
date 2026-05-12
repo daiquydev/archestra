@@ -7,11 +7,15 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import type { SecretValue } from "@/types";
+import { auditColumns } from "../utils/audit";
+
 
 const secretTable = pgTable("secret", {
   id: uuid("id").primaryKey().defaultRandom(),
   /** Human-readable name to identify the secret in external storage */
-  name: varchar("name", { length: 256 }).notNull().default("secret"),
+  name: varchar("name", { length: 256,
+    ...auditColumns,
+  }).notNull().default("secret"),
   /**
    * Stores secret data. Format depends on storage type:
    * - For DB-stored secrets (isVault=false, isByosVault=false): { "access_token": "actual_value", ... }

@@ -1,5 +1,7 @@
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { team } from "./team";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * Team Vault folder mapping table.
@@ -11,7 +13,9 @@ const teamVaultFolderTable = pgTable("team_vault_folder", {
   teamId: text("team_id")
     .notNull()
     .unique()
-    .references(() => team.id, { onDelete: "cascade" }),
+    .references(() => team.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
   /** Vault folder path, e.g., "secret/data/engineering" */
   vaultPath: text("vault_path").notNull(),
   createdAt: timestamp("created_at").notNull(),

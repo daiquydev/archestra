@@ -116,12 +116,56 @@ export async function isDatabaseHealthy(): Promise<boolean> {
   }
 }
 
+import { isNull, and } from "drizzle-orm";
+
 /**
  * Default export to use a Proxy to defer access until after database initialization.
+ * Enhanced with system-wide soft-delete logic.
  */
 export default new Proxy({} as ReturnType<typeof getDb>, {
   get(_, prop) {
-    return (getDb() as unknown as Record<string | symbol, unknown>)[prop];
+    const target = getDb() as any;
+    const value = target[prop];
+
+    if (prop === "delete") {
+      return (table: any) => {
+        // If the table supports soft delete, redirect to update
+        if (table.deletedAt) {
+          return target.update(table).set({ deletedAt: new Date() });
+        }
+        return value.call(target, table);
+      };
+    }
+
+    if (prop === "select" || prop === "selectDistinct") {
+      return (...args: any[]) => {
+        const queryBuilder = value.apply(target, args);
+        const originalFrom = queryBuilder.from;
+
+        queryBuilder.from = (table: any) => {
+          const result = originalFrom.call(queryBuilder, table);
+
+          // If the table supports soft delete, wrap the result to intercept .where()
+          if (table.deletedAt) {
+            const softDeleteFilter = isNull(table.deletedAt);
+
+            // 1. Pre-apply the soft delete filter
+            result.where(softDeleteFilter);
+
+            // 2. Intercept future .where() calls to merge them using and()
+            const originalWhere = result.where;
+            result.where = (condition: any) => {
+              return originalWhere.call(result, and(softDeleteFilter, condition));
+            };
+          }
+          return result;
+        };
+
+        return queryBuilder;
+      };
+    }
+
+    return typeof value === "function" ? value.bind(target) : value;
   },
 });
 

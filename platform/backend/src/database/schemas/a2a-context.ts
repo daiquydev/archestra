@@ -1,4 +1,6 @@
 import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { auditColumns } from "../utils/audit";
+
 
 const a2aContextTable = pgTable(
   "a2a_context",
@@ -6,7 +8,9 @@ const a2aContextTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     actorKind: text("actor_kind").notNull(),
     actorId: text("actor_id").notNull(),
-    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { mode: "date",
+    ...auditColumns,
+  }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" })
       .notNull()
       .defaultNow()

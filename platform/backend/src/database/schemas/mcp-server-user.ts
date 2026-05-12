@@ -7,6 +7,8 @@ import {
 } from "drizzle-orm/pg-core";
 import mcpServerTable from "./mcp-server";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * McpServerUser table - many-to-many relationship between MCP servers and users
@@ -17,7 +19,9 @@ const mcpServerUserTable = pgTable(
   {
     mcpServerId: uuid("mcp_server_id")
       .notNull()
-      .references(() => mcpServerTable.id, { onDelete: "cascade" }),
+      .references(() => mcpServerTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     userId: text("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),

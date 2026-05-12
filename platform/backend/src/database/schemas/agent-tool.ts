@@ -3,6 +3,8 @@ import type { CredentialResolutionMode } from "@/types";
 import agentsTable from "./agent";
 import mcpServerTable from "./mcp-server";
 import toolsTable from "./tool";
+import { auditColumns } from "../utils/audit";
+
 
 const agentToolsTable = pgTable(
   "agent_tools",
@@ -10,7 +12,9 @@ const agentToolsTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     agentId: uuid("agent_id")
       .notNull()
-      .references(() => agentsTable.id, { onDelete: "cascade" }),
+      .references(() => agentsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     toolId: uuid("tool_id")
       .notNull()
       .references(() => toolsTable.id, { onDelete: "cascade" }),

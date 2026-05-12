@@ -7,6 +7,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import conversationsTable from "./conversation";
+import { auditColumns } from "../utils/audit";
+
 
 const messagesTable = pgTable(
   "messages",
@@ -14,7 +16,9 @@ const messagesTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     conversationId: uuid("conversation_id")
       .notNull()
-      .references(() => conversationsTable.id, { onDelete: "cascade" }),
+      .references(() => conversationsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     role: text("role").notNull(),
     // biome-ignore lint/suspicious/noExplicitAny: Stores complete UIMessage structure from AI SDK which is dynamic
     content: jsonb("content").$type<any>().notNull(),

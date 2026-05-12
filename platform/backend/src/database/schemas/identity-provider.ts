@@ -6,6 +6,8 @@ import type {
 } from "@shared";
 import { boolean, pgTable, text } from "drizzle-orm/pg-core";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const identityProvidersTable = pgTable("identity_provider", {
   id: text("id").primaryKey(),
@@ -16,6 +18,7 @@ const identityProvidersTable = pgTable("identity_provider", {
   teamSyncConfig: text("team_sync_config").$type<IdpTeamSyncConfig>(),
   userId: text("user_id").references(() => usersTable.id, {
     onDelete: "cascade",
+    ...auditColumns,
   }),
   providerId: text("provider_id").notNull().unique(),
   organizationId: text("organization_id"),

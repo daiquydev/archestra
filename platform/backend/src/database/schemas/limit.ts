@@ -9,6 +9,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import type { LimitEntityType, LimitType } from "@/types";
+import { auditColumns } from "../utils/audit";
+
 
 const limitsTable = pgTable(
   "limits",
@@ -18,7 +20,9 @@ const limitsTable = pgTable(
     entityId: text("entity_id").notNull(),
     limitType: varchar("limit_type").$type<LimitType>().notNull(),
     limitValue: integer("limit_value").notNull(),
-    mcpServerName: varchar("mcp_server_name", { length: 255 }),
+    mcpServerName: varchar("mcp_server_name", { length: 255,
+    ...auditColumns,
+  }),
     toolName: varchar("tool_name", { length: 255 }),
     // JSONB array stores multiple models for a single limit (e.g., ["gpt-4o", "claude-3-5-sonnet"])
     // This is the "source of truth" for which models a limit covers, enabling:

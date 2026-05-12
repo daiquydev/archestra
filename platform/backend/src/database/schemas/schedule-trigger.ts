@@ -8,6 +8,8 @@ import {
 } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const scheduleTriggersTable = pgTable(
   "schedule_triggers",
@@ -17,7 +19,9 @@ const scheduleTriggersTable = pgTable(
     name: text("name").notNull(),
     agentId: uuid("agent_id")
       .notNull()
-      .references(() => agentsTable.id, { onDelete: "cascade" }),
+      .references(() => agentsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     messageTemplate: text("message_template").notNull(),
     cronExpression: text("cron_expression").notNull(),
     timezone: text("timezone").notNull(),

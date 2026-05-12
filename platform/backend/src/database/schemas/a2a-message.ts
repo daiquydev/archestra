@@ -8,6 +8,8 @@ import {
 } from "drizzle-orm/pg-core";
 import a2aContextTable from "./a2a-context";
 import a2aTaskTable from "./a2a-task";
+import { auditColumns } from "../utils/audit";
+
 
 const a2aMessageTable = pgTable(
   "a2a_message",
@@ -15,7 +17,9 @@ const a2aMessageTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     contextId: uuid("context_id")
       .notNull()
-      .references(() => a2aContextTable.id, { onDelete: "cascade" }),
+      .references(() => a2aContextTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     taskId: uuid("task_id").references(() => a2aTaskTable.id, {
       onDelete: "cascade",
     }),

@@ -1,5 +1,7 @@
 import { pgTable, text, timestamp, unique } from "drizzle-orm/pg-core";
 import { team } from "./team";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * Stores mappings between Archestra teams and external identity provider groups.
@@ -14,7 +16,9 @@ const teamExternalGroupsTable = pgTable(
     id: text("id").primaryKey(),
     teamId: text("team_id")
       .notNull()
-      .references(() => team.id, { onDelete: "cascade" }),
+      .references(() => team.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     /**
      * The external group identifier from the identity provider.
      * Format varies by provider:

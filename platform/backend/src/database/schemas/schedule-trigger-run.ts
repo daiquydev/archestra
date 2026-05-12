@@ -4,6 +4,8 @@ import type {
   ScheduleTriggerRunStatus,
 } from "@/types/schedule-trigger";
 import scheduleTriggersTable from "./schedule-trigger";
+import { auditColumns } from "../utils/audit";
+
 
 const scheduleTriggerRunsTable = pgTable(
   "schedule_trigger_runs",
@@ -12,7 +14,9 @@ const scheduleTriggerRunsTable = pgTable(
     organizationId: text("organization_id").notNull(),
     triggerId: uuid("trigger_id")
       .notNull()
-      .references(() => scheduleTriggersTable.id, { onDelete: "cascade" }),
+      .references(() => scheduleTriggersTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     runKind: text("run_kind").$type<ScheduleTriggerRunKind>().notNull(),
     status: text("status")
       .$type<ScheduleTriggerRunStatus>()

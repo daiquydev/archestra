@@ -18,6 +18,8 @@ import type {
 } from "@/types";
 import secretTable from "./secret";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 export const mcpCatalogScopeEnum = pgEnum("mcp_catalog_scope", [
   "personal",
@@ -52,7 +54,8 @@ const internalMcpCatalogTable = pgTable(
     docsUrl: text("docs_url"), // Documentation URL for remote servers
     clientSecretId: uuid("client_secret_id").references(() => secretTable.id, {
       onDelete: "set null",
-    }), // For OAuth client_secret storage
+    ...auditColumns,
+  }), // For OAuth client_secret storage
     localConfigSecretId: uuid("local_config_secret_id").references(
       () => secretTable.id,
       {

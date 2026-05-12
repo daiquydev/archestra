@@ -9,6 +9,8 @@ import {
 import conversationsTable from "./conversation";
 import { team } from "./team";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 export const conversationShareVisibilityEnum = pgEnum(
   "conversation_share_visibility",
@@ -19,7 +21,9 @@ const conversationSharesTable = pgTable("conversation_shares", {
   id: uuid("id").primaryKey().defaultRandom(),
   conversationId: uuid("conversation_id")
     .notNull()
-    .references(() => conversationsTable.id, { onDelete: "cascade" })
+    .references(() => conversationsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  })
     .unique(),
   organizationId: text("organization_id").notNull(),
   createdByUserId: text("created_by_user_id").notNull(),

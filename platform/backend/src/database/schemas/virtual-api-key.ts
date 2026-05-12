@@ -9,13 +9,17 @@ import {
 import type { ResourceVisibilityScope } from "@/types";
 import secretsTable from "./secret";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const virtualApiKeysTable = pgTable(
   "virtual_api_keys",
   {
     id: uuid("id").primaryKey().defaultRandom(),
     organizationId: text("organization_id").notNull(),
-    name: varchar("name", { length: 256 }).notNull(),
+    name: varchar("name", { length: 256,
+    ...auditColumns,
+  }).notNull(),
     /** Reference to secret table where token value is stored */
     secretId: uuid("secret_id")
       .notNull()

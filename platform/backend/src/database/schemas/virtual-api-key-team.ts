@@ -8,13 +8,17 @@ import {
 } from "drizzle-orm/pg-core";
 import { team } from "./team";
 import virtualApiKeysTable from "./virtual-api-key";
+import { auditColumns } from "../utils/audit";
+
 
 const virtualApiKeyTeamsTable = pgTable(
   "virtual_api_key_team",
   {
     virtualApiKeyId: uuid("virtual_api_key_id")
       .notNull()
-      .references(() => virtualApiKeysTable.id, { onDelete: "cascade" }),
+      .references(() => virtualApiKeysTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     teamId: text("team_id")
       .notNull()
       .references(() => team.id, { onDelete: "cascade" }),

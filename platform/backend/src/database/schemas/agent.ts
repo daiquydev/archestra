@@ -20,6 +20,8 @@ import type {
 import identityProvidersTable from "./identity-provider";
 import llmProviderApiKeysTable from "./llm-provider-api-key";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * Unified agents table supporting both external profiles and internal agents.
@@ -47,7 +49,8 @@ const agentsTable = pgTable(
     organizationId: text("organization_id").notNull(),
     authorId: text("author_id").references(() => usersTable.id, {
       onDelete: "set null",
-    }),
+    ...auditColumns,
+  }),
     scope: text("scope").$type<AgentScope>().notNull().default("personal"),
     name: text("name").notNull(),
     slug: text("slug"),

@@ -22,6 +22,8 @@ import type {
   OrganizationCompressionScope,
   OrganizationLimitCleanupInterval,
 } from "@/types";
+import { auditColumns } from "../utils/audit";
+
 
 const organizationsTable = pgTable("organization", {
   id: text("id").primaryKey(),
@@ -29,7 +31,7 @@ const organizationsTable = pgTable("organization", {
   slug: text("slug").notNull().unique(),
   logo: text("logo"),
   logoDark: text("logo_dark"),
-  createdAt: timestamp("created_at").notNull(),
+
   metadata: text("metadata"),
   limitCleanupInterval: varchar("limit_cleanup_interval")
     .$type<OrganizationLimitCleanupInterval>()
@@ -195,6 +197,7 @@ const organizationsTable = pgTable("organization", {
   connectionBaseUrls: jsonb("connection_base_urls").$type<
     ConnectionBaseUrl[]
   >(),
-});
+    ...auditColumns,
+  });
 
 export default organizationsTable;

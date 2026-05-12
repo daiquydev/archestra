@@ -7,6 +7,8 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const apikey = pgTable(
   "apikey",
@@ -19,7 +21,9 @@ const apikey = pgTable(
     key: text("key").notNull(),
     referenceId: text("reference_id")
       .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
+      .references(() => usersTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     refillInterval: integer("refill_interval"),
     refillAmount: integer("refill_amount"),
     lastRefillAt: timestamp("last_refill_at"),

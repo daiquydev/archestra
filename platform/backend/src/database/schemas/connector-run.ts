@@ -9,6 +9,8 @@ import {
 } from "drizzle-orm/pg-core";
 import type { ConnectorSyncStatus } from "@/types/knowledge-connector";
 import knowledgeBaseConnectorsTable from "./knowledge-base-connector";
+import { auditColumns } from "../utils/audit";
+
 
 const connectorRunsTable = pgTable(
   "connector_runs",
@@ -18,7 +20,8 @@ const connectorRunsTable = pgTable(
       .notNull()
       .references(() => knowledgeBaseConnectorsTable.id, {
         onDelete: "cascade",
-      }),
+    ...auditColumns,
+  }),
     status: text("status").$type<ConnectorSyncStatus>().notNull(),
     startedAt: timestamp("started_at", { mode: "date" }).notNull(),
     completedAt: timestamp("completed_at", { mode: "date" }),

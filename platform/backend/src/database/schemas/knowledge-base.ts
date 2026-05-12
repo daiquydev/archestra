@@ -1,4 +1,6 @@
 import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { auditColumns } from "../utils/audit";
+
 
 const knowledgeBasesTable = pgTable(
   "knowledge_bases",
@@ -8,7 +10,9 @@ const knowledgeBasesTable = pgTable(
     name: text("name").notNull(),
     description: text("description"),
     status: text("status").notNull().default("active"),
-    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { mode: "date",
+    ...auditColumns,
+  }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" })
       .notNull()
       .defaultNow()

@@ -7,6 +7,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import limitsTable from "./limit";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * Tracks per-model token usage for token_cost limits.
@@ -19,7 +21,9 @@ const limitModelUsageTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     limitId: uuid("limit_id")
       .notNull()
-      .references(() => limitsTable.id, { onDelete: "cascade" }),
+      .references(() => limitsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     model: varchar("model", { length: 255 }).notNull(),
     currentUsageTokensIn: integer("current_usage_tokens_in")
       .notNull()

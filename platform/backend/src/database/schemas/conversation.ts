@@ -9,6 +9,8 @@ import {
 } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
 import llmProviderApiKeysTable from "./llm-provider-api-key";
+import { auditColumns } from "../utils/audit";
+
 
 // Note: Additional pg_trgm GIN index for search is created in migration 0116_pg_trgm_indexes.sql:
 // - conversations_title_trgm_idx: GIN index on title column
@@ -20,6 +22,7 @@ const conversationsTable = pgTable("conversations", {
   // null indicates the agent was deleted
   agentId: uuid("agent_id").references(() => agentsTable.id, {
     onDelete: "set null",
+    ...auditColumns,
   }),
   chatApiKeyId: uuid("chat_api_key_id").references(
     () => llmProviderApiKeysTable.id,

@@ -10,6 +10,8 @@ import {
 import type { CommonToolCall, MCPGatewayAuthMethod } from "@/types";
 import agentsTable from "./agent";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 // Note: Additional pg_trgm GIN indexes for search are created in migration 0116_pg_trgm_indexes.sql:
 // - mcp_tool_calls_method_trgm_idx: GIN index on method column
@@ -23,7 +25,8 @@ const mcpToolCallsTable = pgTable(
     // null indicates the agent was deleted
     agentId: uuid("agent_id").references(() => agentsTable.id, {
       onDelete: "set null",
-    }),
+    ...auditColumns,
+  }),
     mcpServerName: varchar("mcp_server_name", { length: 255 }).notNull(),
     method: varchar("method", { length: 255 }).notNull(),
     toolCall: jsonb("tool_call").$type<CommonToolCall | null>(),

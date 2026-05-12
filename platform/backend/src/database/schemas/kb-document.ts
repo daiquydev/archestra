@@ -10,6 +10,8 @@ import {
 } from "drizzle-orm/pg-core";
 import type { EmbeddingStatus, KbDocumentMetadata } from "@/types/kb-document";
 import knowledgeBaseConnectorsTable from "./knowledge-base-connector";
+import { auditColumns } from "../utils/audit";
+
 
 const kbDocumentsTable = pgTable(
   "kb_documents",
@@ -21,7 +23,8 @@ const kbDocumentsTable = pgTable(
       .notNull()
       .references(() => knowledgeBaseConnectorsTable.id, {
         onDelete: "cascade",
-      }),
+    ...auditColumns,
+  }),
     title: text("title").notNull(),
     content: text("content").notNull(),
     contentHash: text("content_hash").notNull(),

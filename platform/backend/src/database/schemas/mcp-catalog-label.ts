@@ -2,13 +2,17 @@ import { pgTable, primaryKey, timestamp, uuid } from "drizzle-orm/pg-core";
 import internalMcpCatalogTable from "./internal-mcp-catalog";
 import labelKeyTable from "./label-key";
 import labelValueTable from "./label-value";
+import { auditColumns } from "../utils/audit";
+
 
 const mcpCatalogLabelsTable = pgTable(
   "mcp_catalog_labels",
   {
     catalogId: uuid("catalog_id")
       .notNull()
-      .references(() => internalMcpCatalogTable.id, { onDelete: "cascade" }),
+      .references(() => internalMcpCatalogTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     keyId: uuid("key_id")
       .notNull()
       .references(() => labelKeyTable.id, { onDelete: "cascade" }),

@@ -16,6 +16,8 @@ import mcpCatalogTable from "./internal-mcp-catalog";
 import secretTable from "./secret";
 import { team } from "./team";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 // OAuth refresh error codes:
 // - refresh_failed: refresh was attempted but failed
@@ -33,7 +35,8 @@ const mcpServerTable = pgTable(
     catalogId: uuid("catalog_id")
       .references(() => mcpCatalogTable.id, {
         onDelete: "set null",
-      })
+    ...auditColumns,
+  })
       .notNull(),
     serverType: text("server_type")
       .$type<InternalMcpCatalogServerType>()

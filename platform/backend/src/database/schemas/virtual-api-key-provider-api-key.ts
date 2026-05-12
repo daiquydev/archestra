@@ -9,13 +9,17 @@ import {
 } from "drizzle-orm/pg-core";
 import llmProviderApiKeysTable from "./llm-provider-api-key";
 import virtualApiKeysTable from "./virtual-api-key";
+import { auditColumns } from "../utils/audit";
+
 
 const virtualApiKeyProviderApiKeysTable = pgTable(
   "virtual_api_key_provider_api_key",
   {
     virtualApiKeyId: uuid("virtual_api_key_id")
       .notNull()
-      .references(() => virtualApiKeysTable.id, { onDelete: "cascade" }),
+      .references(() => virtualApiKeysTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     provider: text("provider").$type<SupportedProvider>().notNull(),
     providerApiKeyId: uuid("provider_api_key_id")
       .notNull()

@@ -3,13 +3,17 @@ import oauthClient from "./oauth-client";
 import oauthRefreshToken from "./oauth-refresh-token";
 import session from "./session";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const oauthAccessToken = pgTable("oauth_access_token", {
   id: text("id").primaryKey(),
   token: text("token").notNull().unique(),
   clientId: text("client_id")
     .notNull()
-    .references(() => oauthClient.clientId, { onDelete: "cascade" }),
+    .references(() => oauthClient.clientId, { onDelete: "cascade",
+    ...auditColumns,
+  }),
   sessionId: text("session_id").references(() => session.id, {
     onDelete: "set null",
   }),

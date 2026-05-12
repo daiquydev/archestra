@@ -8,6 +8,8 @@ import {
 } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
 import chatopsChannelBindingsTable from "./chatops-channel-binding";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * Per-thread agent overrides for chatops channels.
@@ -29,7 +31,8 @@ const chatopsThreadAgentOverrideTable = pgTable(
       .notNull()
       .references(() => chatopsChannelBindingsTable.id, {
         onDelete: "cascade",
-      }),
+    ...auditColumns,
+  }),
     /** Thread identifier (Slack thread_ts / Teams replyToId / channelId fallback for DMs) */
     threadId: varchar("thread_id", { length: 256 }).notNull(),
     /** The overridden agent for this specific thread */

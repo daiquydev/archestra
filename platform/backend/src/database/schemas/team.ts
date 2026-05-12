@@ -1,6 +1,8 @@
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import organizationsTable from "./organization";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 export const team = pgTable("team", {
   id: text("id").primaryKey(),
@@ -8,7 +10,9 @@ export const team = pgTable("team", {
   description: text("description"),
   organizationId: text("organization_id")
     .notNull()
-    .references(() => organizationsTable.id, { onDelete: "cascade" }),
+    .references(() => organizationsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
   createdBy: text("created_by")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),

@@ -13,6 +13,8 @@ import {
 } from "drizzle-orm/pg-core";
 
 import type { ModelInputModality, ModelOutputModality } from "@/types";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * Models table - stores capability and pricing metadata fetched from models.dev API.
@@ -53,7 +55,8 @@ const modelsTable = pgTable(
     promptPricePerToken: numeric("prompt_price_per_token", {
       precision: 20,
       scale: 12,
-    }),
+    ...auditColumns,
+  }),
 
     /** Price per token for completion/output (in dollars) */
     completionPricePerToken: numeric("completion_price_per_token", {

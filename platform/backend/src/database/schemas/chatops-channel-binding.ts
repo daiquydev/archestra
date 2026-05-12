@@ -10,6 +10,8 @@ import {
 } from "drizzle-orm/pg-core";
 import type { ChatOpsProviderType } from "@/types/chatops";
 import agentsTable from "./agent";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * Maps chatops channels (Teams, Slack, etc.) to Archestra agents.
@@ -27,7 +29,9 @@ const chatopsChannelBindingsTable = pgTable(
     /** Organization that owns this binding */
     organizationId: text("organization_id").notNull(),
     /** Chatops provider type (ms-teams, slack, discord) */
-    provider: varchar("provider", { length: 32 })
+    provider: varchar("provider", { length: 32,
+    ...auditColumns,
+  })
       .$type<ChatOpsProviderType>()
       .notNull(),
     /** Channel ID from the provider (e.g., Teams channel ID) */

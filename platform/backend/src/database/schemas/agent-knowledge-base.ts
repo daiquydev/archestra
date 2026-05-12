@@ -7,13 +7,17 @@ import {
 } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
 import knowledgeBasesTable from "./knowledge-base";
+import { auditColumns } from "../utils/audit";
+
 
 const agentKnowledgeBasesTable = pgTable(
   "agent_knowledge_base",
   {
     agentId: uuid("agent_id")
       .notNull()
-      .references(() => agentsTable.id, { onDelete: "cascade" }),
+      .references(() => agentsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     knowledgeBaseId: uuid("knowledge_base_id")
       .notNull()
       .references(() => knowledgeBasesTable.id, { onDelete: "cascade" }),

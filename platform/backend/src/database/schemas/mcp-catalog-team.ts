@@ -7,13 +7,17 @@ import {
 } from "drizzle-orm/pg-core";
 import internalMcpCatalogTable from "./internal-mcp-catalog";
 import { team } from "./team";
+import { auditColumns } from "../utils/audit";
+
 
 const mcpCatalogTeamsTable = pgTable(
   "mcp_catalog_team",
   {
     catalogId: uuid("catalog_id")
       .notNull()
-      .references(() => internalMcpCatalogTable.id, { onDelete: "cascade" }),
+      .references(() => internalMcpCatalogTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     teamId: text("team_id")
       .notNull()
       .references(() => team.id, { onDelete: "cascade" }),

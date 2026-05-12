@@ -14,6 +14,8 @@ import type { ResourceVisibilityScope } from "@/types";
 import secretsTable from "./secret";
 import { team } from "./team";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const llmProviderApiKeysTable = pgTable(
   "chat_api_keys",
@@ -24,7 +26,8 @@ const llmProviderApiKeysTable = pgTable(
     provider: text("provider").$type<SupportedProvider>().notNull(),
     secretId: uuid("secret_id").references(() => secretsTable.id, {
       onDelete: "set null",
-    }),
+    ...auditColumns,
+  }),
     // Visibility scope for this LLM provider API key.
     scope: text("scope")
       .$type<ResourceVisibilityScope>()

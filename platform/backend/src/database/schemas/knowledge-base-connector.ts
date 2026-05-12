@@ -16,6 +16,8 @@ import type {
 import type { KnowledgeSourceVisibility } from "@/types/knowledge-base";
 import knowledgeBasesTable from "./knowledge-base";
 import secretTable from "./secret";
+import { auditColumns } from "../utils/audit";
+
 
 const knowledgeBaseConnectorsTable = pgTable(
   "knowledge_base_connectors",
@@ -33,7 +35,8 @@ const knowledgeBaseConnectorsTable = pgTable(
     config: jsonb("config").$type<ConnectorConfig>().notNull(),
     secretId: uuid("secret_id").references(() => secretTable.id, {
       onDelete: "set null",
-    }),
+    ...auditColumns,
+  }),
     schedule: text("schedule").notNull().default("0 */6 * * *"),
     enabled: boolean("enabled").notNull().default(true),
     lastSyncAt: timestamp("last_sync_at", { mode: "date" }),

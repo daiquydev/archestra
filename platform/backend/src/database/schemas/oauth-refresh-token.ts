@@ -2,13 +2,17 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import oauthClient from "./oauth-client";
 import session from "./session";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const oauthRefreshToken = pgTable("oauth_refresh_token", {
   id: text("id").primaryKey(),
   token: text("token").notNull(),
   clientId: text("client_id")
     .notNull()
-    .references(() => oauthClient.clientId, { onDelete: "cascade" }),
+    .references(() => oauthClient.clientId, { onDelete: "cascade",
+    ...auditColumns,
+  }),
   sessionId: text("session_id").references(() => session.id, {
     onDelete: "set null",
   }),

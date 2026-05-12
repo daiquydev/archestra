@@ -11,6 +11,8 @@ import {
 import organizationsTable from "./organization";
 import secretsTable from "./secret";
 import { team } from "./team";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * TeamToken table - stores authentication tokens for agent and MCP Gateway access
@@ -23,7 +25,9 @@ const teamTokensTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     organizationId: text("organization_id")
       .notNull()
-      .references(() => organizationsTable.id, { onDelete: "cascade" }),
+      .references(() => organizationsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     /**
      * Team ID for team-scoped tokens. NULL for organization-wide tokens.
      * One-to-one relationship: each token is either org-wide or scoped to exactly one team.

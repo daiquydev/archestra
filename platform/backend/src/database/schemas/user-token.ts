@@ -10,6 +10,8 @@ import {
 import organizationsTable from "./organization";
 import secretsTable from "./secret";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * UserToken table - stores personal authentication tokens for agent and MCP Gateway access
@@ -22,7 +24,9 @@ const userTokensTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     organizationId: text("organization_id")
       .notNull()
-      .references(() => organizationsTable.id, { onDelete: "cascade" }),
+      .references(() => organizationsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     userId: text("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),

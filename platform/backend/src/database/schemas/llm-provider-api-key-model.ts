@@ -8,6 +8,8 @@ import {
 } from "drizzle-orm/pg-core";
 import llmProviderApiKeysTable from "./llm-provider-api-key";
 import modelsTable from "./model";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * Join table linking chat_api_keys to models via a many-to-many relationship.
@@ -26,7 +28,9 @@ const llmProviderApiKeyModelsTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     apiKeyId: uuid("api_key_id")
       .notNull()
-      .references(() => llmProviderApiKeysTable.id, { onDelete: "cascade" }),
+      .references(() => llmProviderApiKeysTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     modelId: uuid("model_id")
       .notNull()
       .references(() => modelsTable.id, { onDelete: "cascade" }),

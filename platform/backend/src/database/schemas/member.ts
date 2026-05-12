@@ -3,6 +3,8 @@ import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
 import organizationsTable from "./organization";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const member = pgTable(
   "member",
@@ -10,7 +12,9 @@ const member = pgTable(
     id: text("id").primaryKey(),
     organizationId: text("organization_id")
       .notNull()
-      .references(() => organizationsTable.id, { onDelete: "cascade" }),
+      .references(() => organizationsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     userId: text("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),

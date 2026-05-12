@@ -1,6 +1,8 @@
 import { jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import type { AutonomyPolicyOperator, TrustedData } from "@/types";
 import toolsTable from "./tool";
+import { auditColumns } from "../utils/audit";
+
 
 /**
  * A single condition in a result policy rule.
@@ -19,7 +21,9 @@ const trustedDataPoliciesTable = pgTable("trusted_data_policies", {
   id: uuid("id").primaryKey().defaultRandom(),
   toolId: uuid("tool_id")
     .notNull()
-    .references(() => toolsTable.id, { onDelete: "cascade" }),
+    .references(() => toolsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
   description: text("description"),
   conditions: jsonb("conditions")
     .$type<ResultPolicyCondition[]>()

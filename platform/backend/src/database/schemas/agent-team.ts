@@ -7,13 +7,17 @@ import {
 } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
 import { team } from "./team";
+import { auditColumns } from "../utils/audit";
+
 
 const agentTeamTable = pgTable(
   "agent_team",
   {
     agentId: uuid("agent_id")
       .notNull()
-      .references(() => agentsTable.id, { onDelete: "cascade" }),
+      .references(() => agentsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     teamId: text("team_id")
       .notNull()
       .references(() => team.id, { onDelete: "cascade" }),

@@ -2,13 +2,17 @@ import { pgTable, primaryKey, timestamp, uuid } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
 import labelKeyTable from "./label-key";
 import labelValueTable from "./label-value";
+import { auditColumns } from "../utils/audit";
+
 
 const agentLabelTable = pgTable(
   "agent_labels",
   {
     agentId: uuid("agent_id")
       .notNull()
-      .references(() => agentsTable.id, { onDelete: "cascade" }),
+      .references(() => agentsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     keyId: uuid("key_id")
       .notNull()
       .references(() => labelKeyTable.id, { onDelete: "cascade" }),

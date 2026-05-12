@@ -1,13 +1,17 @@
 import { pgTable, primaryKey, uuid } from "drizzle-orm/pg-core";
 import conversationsTable from "./conversation";
 import toolsTable from "./tool";
+import { auditColumns } from "../utils/audit";
+
 
 const conversationEnabledToolsTable = pgTable(
   "conversation_enabled_tools",
   {
     conversationId: uuid("conversation_id")
       .notNull()
-      .references(() => conversationsTable.id, { onDelete: "cascade" }),
+      .references(() => conversationsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     toolId: uuid("tool_id")
       .notNull()
       .references(() => toolsTable.id, { onDelete: "cascade" }),

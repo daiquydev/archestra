@@ -7,6 +7,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
+import { auditColumns } from "../utils/audit";
+
 
 const agentSuggestedPromptsTable = pgTable(
   "agent_suggested_prompts",
@@ -14,7 +16,9 @@ const agentSuggestedPromptsTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     agentId: uuid("agent_id")
       .notNull()
-      .references(() => agentsTable.id, { onDelete: "cascade" }),
+      .references(() => agentsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     /** Short title shown on the suggestion button */
     summaryTitle: text("summary_title").notNull(),
     /** The full prompt text sent when the suggestion is clicked */

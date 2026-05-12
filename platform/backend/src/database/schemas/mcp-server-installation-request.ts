@@ -5,6 +5,8 @@ import type {
   McpServerInstallationRequestStatus,
 } from "@/types";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const mcpServerInstallationRequestTable = pgTable(
   "mcp_server_installation_request",
@@ -15,7 +17,8 @@ const mcpServerInstallationRequestTable = pgTable(
       .notNull()
       .references(() => usersTable.id, {
         onDelete: "cascade",
-      }),
+    ...auditColumns,
+  }),
     status: text("status")
       .$type<McpServerInstallationRequestStatus>()
       .notNull()

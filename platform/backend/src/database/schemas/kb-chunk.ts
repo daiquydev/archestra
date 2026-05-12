@@ -9,6 +9,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import kbDocumentsTable from "./kb-document";
+import { auditColumns } from "../utils/audit";
+
 
 function createVectorType(dimensions: number) {
   return customType<{ data: number[]; driverParam: string }>({
@@ -41,7 +43,9 @@ const kbChunksTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     documentId: uuid("document_id")
       .notNull()
-      .references(() => kbDocumentsTable.id, { onDelete: "cascade" }),
+      .references(() => kbDocumentsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     content: text("content").notNull(),
     chunkIndex: integer("chunk_index").notNull(),
     embedding: vector1536("embedding"),

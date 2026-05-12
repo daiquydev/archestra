@@ -10,6 +10,8 @@ import {
 import type { ToolParametersContent } from "@/types";
 import agentsTable from "./agent";
 import mcpCatalogTable from "./internal-mcp-catalog";
+import { auditColumns } from "../utils/audit";
+
 
 const toolsTable = pgTable(
   "tools",
@@ -18,7 +20,8 @@ const toolsTable = pgTable(
     /** @deprecated No longer set by any code path. All tool-to-agent links use the agent_tools junction table. Will be dropped in a future migration. */
     agentId: uuid("agent_id").references(() => agentsTable.id, {
       onDelete: "cascade",
-    }),
+    ...auditColumns,
+  }),
     // catalogId links MCP tools to their catalog item (shared across installations)
     // null for proxy-sniffed tools
     catalogId: uuid("catalog_id").references(() => mcpCatalogTable.id, {

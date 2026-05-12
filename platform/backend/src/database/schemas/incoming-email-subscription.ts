@@ -1,10 +1,14 @@
 import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import type { EmailProviderType } from "@/types/incoming-email";
+import { auditColumns } from "../utils/audit";
+
 
 const incomingEmailSubscriptionsTable = pgTable("incoming_email_subscription", {
   id: uuid("id").primaryKey().defaultRandom(),
   /** Microsoft Graph subscription ID */
-  subscriptionId: varchar("subscription_id", { length: 256 }).notNull(),
+  subscriptionId: varchar("subscription_id", { length: 256,
+    ...auditColumns,
+  }).notNull(),
   /** Email provider type (e.g., "outlook") */
   provider: varchar("provider", { length: 64 })
     .$type<EmailProviderType>()

@@ -1,5 +1,7 @@
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const twoFactor = pgTable("two_factor", {
   id: text("id").primaryKey(),
@@ -7,7 +9,9 @@ const twoFactor = pgTable("two_factor", {
   backupCodes: text("backup_codes").notNull(),
   userId: text("user_id")
     .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
+    .references(() => usersTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

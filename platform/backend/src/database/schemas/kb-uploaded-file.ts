@@ -9,6 +9,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import knowledgeBaseConnectorsTable from "./knowledge-base-connector";
+import { auditColumns } from "../utils/audit";
+
 
 const bytea = customType<{ data: Buffer; driverParam: Buffer }>({
   dataType() {
@@ -24,7 +26,8 @@ const kbUploadedFilesTable = pgTable(
       .notNull()
       .references(() => knowledgeBaseConnectorsTable.id, {
         onDelete: "cascade",
-      }),
+    ...auditColumns,
+  }),
     organizationId: text("organization_id").notNull(),
     originalName: text("original_name").notNull(),
     mimeType: text("mime_type").notNull(),

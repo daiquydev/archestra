@@ -11,6 +11,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import type { TaskStatus, TaskType } from "@/types";
+import { auditColumns } from "../utils/audit";
+
 
 const tasksTable = pgTable(
   "tasks",
@@ -20,7 +22,9 @@ const tasksTable = pgTable(
     payload: jsonb("payload")
       .$type<Record<string, unknown>>()
       .notNull()
-      .default({}),
+      .default({,
+    ...auditColumns,
+  }),
     status: text("status").$type<TaskStatus>().notNull().default("pending"),
     attempt: integer("attempt").notNull().default(0),
     maxAttempts: integer("max_attempts").notNull().default(5),

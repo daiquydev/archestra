@@ -9,6 +9,8 @@ import {
 } from "drizzle-orm/pg-core";
 import agentsTable from "./agent";
 import usersTable from "./user";
+import { auditColumns } from "../utils/audit";
+
 
 const browserTabStatesTable = pgTable(
   "browser_tab_states",
@@ -16,7 +18,9 @@ const browserTabStatesTable = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     agentId: uuid("agent_id")
       .notNull()
-      .references(() => agentsTable.id, { onDelete: "cascade" }),
+      .references(() => agentsTable.id, { onDelete: "cascade",
+    ...auditColumns,
+  }),
     userId: text("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
